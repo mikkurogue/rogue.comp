@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ComandPaletteProps, Command, CommandGroup } from "./cmd-types/types";
+import CommandComp from "./command";
+import {
+  IconCommand,
+  IconPrompt,
+  IconSitemap,
+  IconTerminal,
+  IconTerminal2,
+} from "@tabler/icons-react";
 
 export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,14 +85,32 @@ export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
   return (
     <div className="fixed inset-0 bg-gray-200/75 flex justify-center items-start pt-20">
       <div className="bg-white rounded-lg w-full max-w-md mx-auto p-4 shadow-lg">
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder="Type a command..."
-          value={query}
-          onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
-        />
+        <div className="relative flex items-center">
+          {/* Left icon */}
+          <span className="absolute left-0 inset-y-0 flex bottom-3 items-center pl-3">
+            <IconSitemap />
+          </span>
+
+          {/* Input field */}
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Type a command..."
+            value={query}
+            onChange={handleInputChange}
+            className="w-full p-2 pl-10 border border-gray-300 rounded mb-4"
+          />
+
+          {/* Divider */}
+          <span className="absolute right-0 inset-y-0 flex items-center pr-3">
+            <span className="h-6 w-px bg-gray-300"></span> {/* Thin divider */}
+          </span>
+
+          {/* Right icon */}
+          <span className="absolute right-0 inset-y-0 flex bottom-3 items-center pr-3">
+            <IconPrompt />
+          </span>
+        </div>
         <ul>
           {filteredCommands.map((group, groupIndex) => (
             <li key={groupIndex} className="mb-2">
@@ -96,7 +122,7 @@ export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
                     className="p-2 cursor-pointer hover:bg-gray-200 rounded"
                     onClick={() => handleCommandClick(command.action)}
                   >
-                    {command.name}
+                    <CommandComp label={command.name} icon={<IconTerminal />} />
                   </li>
                 ))}
               </ul>

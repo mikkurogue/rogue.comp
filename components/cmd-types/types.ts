@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type ComandPaletteProps = {
   commandGroups: CommandGroup[];
 };
@@ -10,4 +12,9 @@ export type CommandGroup = {
 export type Command = {
   name: string;
   action: () => void;
+};
+
+export type CommandCompProps = {
+  icon: ReactNode;
+  label: string;
 };
