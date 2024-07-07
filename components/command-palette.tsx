@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ComandPaletteProps } from "./cmd-types/types";
+import { ComandPaletteProps, Command, CommandGroup } from "./cmd-types/types";
 
 export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [filteredCommands, setFilteredCommands] = useState(commandGroups);
+  const [filteredCommands, setFilteredCommands] =
+    useState<CommandGroup[]>(commandGroups);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -26,18 +27,33 @@ export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
     setFilteredCommands(filteredGroups);
   }, [query, commandGroups]);
 
-  console.log(filteredCommands);
-
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
       event.preventDefault();
       setIsOpen(!isOpen);
     }
 
-    if (event.key === "Escape" || event.key === "Esc") {
+    if (event.key === "Enter" && isOpen) {
       event.preventDefault();
+      const top = getTop(filteredCommands);
+      if (top) {
+        top.action();
+        setIsOpen(false);
+      }
+    }
+
+    if (event.key === "Escape" || event.key === "Esc") {
       setIsOpen(false);
     }
+  };
+
+  const getTop = (groups: CommandGroup[]): Command | undefined => {
+    for (const group of groups) {
+      if (group.commands.length > 0) {
+        return group.commands[0];
+      }
+    }
+    return undefined;
   };
 
   useEffect(() => {
@@ -45,9 +61,18 @@ export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, filteredCommands]);
 
   if (!isOpen) return null;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
+  const handleCommandClick = (action: () => void) => {
+    action();
+    setIsOpen(false);
+  };
 
   return (
     <div className="fixed inset-0 bg-gray-200/75 flex justify-center items-start pt-20">
@@ -57,32 +82,23 @@ export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
           type="text"
           placeholder="Type a command..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded mb-4"
         />
         <ul>
-          {filteredCommands.map((command, index) => (
-            <li
-              key={index}
-              className="p-2 cursor-pointer hover:bg-gray-200 rounded"
-            >
-              {command.group}
+          {filteredCommands.map((group, groupIndex) => (
+            <li key={groupIndex} className="mb-2">
+              <h3 className="font-bold">{group.group}</h3>
               <ul>
-                {command.commands.map((subCommand, index) => {
-                  return (
-                    <li
-                      key={index}
-                      className="p-2 cursor-pointer hover:bg-blue-100 rounded"
-                      onClick={() => {
-                        subCommand.action();
-
-                        setIsOpen(false);
-                      }}
-                    >
-                      {subCommand.name}
-                    </li>
-                  );
-                })}
+                {group.commands.map((command, commandIndex) => (
+                  <li
+                    key={commandIndex}
+                    className="p-2 cursor-pointer hover:bg-gray-200 rounded"
+                    onClick={() => handleCommandClick(command.action)}
+                  >
+                    {command.name}
+                  </li>
+                ))}
               </ul>
             </li>
           ))}
