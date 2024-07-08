@@ -1,13 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ComandPaletteProps, Command, CommandGroup } from "./cmd-types/types";
-import CommandComp from "./command";
-import {
-  IconCommand,
-  IconPrompt,
-  IconSitemap,
-  IconTerminal,
-  IconTerminal2,
-} from "@tabler/icons-react";
+import { IconPrompt, IconSitemap, IconTerminal } from "@tabler/icons-react";
+import CommandItem from "./command";
 
 export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -122,7 +116,7 @@ export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
                     className="p-2 cursor-pointer hover:bg-gray-200 rounded"
                     onClick={() => handleCommandClick(command.action)}
                   >
-                    <CommandComp label={command.name} icon={<IconTerminal />} />
+                    <CommandItem label={command.name} icon={<IconTerminal />} />
                   </li>
                 ))}
               </ul>
