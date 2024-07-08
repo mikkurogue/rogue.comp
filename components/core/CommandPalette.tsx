@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ComandPaletteProps, Command, CommandGroup } from "./cmd-types/types";
+import { ComandPaletteProps, Command, CommandGroup } from "../cmd-types/types";
 import { IconPrompt, IconSitemap, IconTerminal } from "@tabler/icons-react";
-import CommandItem from "./command";
+import CommandItem from "./CommandItem";
 
 export default function CommandPalette({ commandGroups }: ComandPaletteProps) {
   const [isOpen, setIsOpen] = useState(false);

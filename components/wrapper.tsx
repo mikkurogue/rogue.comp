@@ -1,7 +1,7 @@
 import React from "react";
-import CommandPalette from "./command-palette";
-import { useRouter } from "next/router";
 import { CommandGroup } from "./cmd-types/types";
+import { useRouter } from "next/router";
+import CommandPalette from "./core/CommandPalette";
 
 export default function Wrapper() {
   const router = useRouter();
